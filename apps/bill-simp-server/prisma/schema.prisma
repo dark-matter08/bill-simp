@@ -1,0 +1,164 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Invoice {
+  amount        Float?
+  createdAt     DateTime           @default(now())
+  customer      String?
+  description   String?
+  dueDate       DateTime?
+  id            String             @id @default(cuid())
+  invoiceDate   DateTime?
+  invoiceNumber String?
+  items         Json?
+  status        EnumInvoiceStatus?
+  updatedAt     DateTime           @updatedAt
+}
+
+model Quotation {
+  client          String?
+  createdAt       DateTime  @default(now())
+  description     String?
+  id              String    @id @default(cuid())
+  items           Json?
+  quotationDate   DateTime?
+  quotationNumber String?
+  total           Float?
+  updatedAt       DateTime  @updatedAt
+  validUntil      DateTime?
+}
+
+model RecurringInvoice {
+  amount                 Float?
+  client                 String?
+  createdAt              DateTime                    @default(now())
+  description            String?
+  endDate                DateTime?
+  frequency              String?
+  id                     String                      @id @default(cuid())
+  recurringInvoiceNumber String?
+  startDate              DateTime?
+  status                 EnumRecurringInvoiceStatus?
+  updatedAt              DateTime                    @updatedAt
+  user                   String?
+}
+
+model Email {
+  attachments  Json?
+  body         String?
+  createdAt    DateTime         @default(now())
+  emailAddress String?
+  id           String           @id @default(cuid())
+  sentDate     DateTime?
+  status       EnumEmailStatus?
+  subject      String?
+  updatedAt    DateTime         @updatedAt
+  user         User?            @relation(fields: [userId], references: [id])
+  userId       String?
+}
+
+model CreditNote {
+  amount           Float?
+  client           String?
+  createdAt        DateTime              @default(now())
+  creditNoteDate   DateTime?
+  creditNoteNumber String?
+  id               String                @id @default(cuid())
+  reason           String?
+  status           EnumCreditNoteStatus?
+  updatedAt        DateTime              @updatedAt
+  user             String?
+}
+
+model Accounting {
+  amount          Float?
+  category        String?
+  createdAt       DateTime                       @default(now())
+  description     String?
+  entryDate       DateTime?
+  id              String                         @id @default(cuid())
+  incomeOrExpense EnumAccountingIncomeOrExpense?
+  updatedAt       DateTime                       @updatedAt
+  user            String?
+}
+
+model DeliveryNote {
+  address            String?
+  client             String?
+  createdAt          DateTime                @default(now())
+  deliveryDate       DateTime?
+  deliveryNoteNumber String?
+  deliveryPerson     String?
+  id                 String                  @id @default(cuid())
+  items              Json?
+  status             EnumDeliveryNoteStatus?
+  updatedAt          DateTime                @updatedAt
+}
+
+model Statement {
+  client          String?
+  createdAt       DateTime  @default(now())
+  description     String?
+  endDate         DateTime?
+  id              String    @id @default(cuid())
+  startDate       DateTime?
+  statementDate   DateTime?
+  statementNumber String?
+  totalAmount     Float?
+  transactions    Json?
+  updatedAt       DateTime  @updatedAt
+}
+
+model Client {
+  address       String?
+  businessName  String?
+  contactPerson String?
+  createdAt     DateTime @default(now())
+  email         String?
+  id            String   @id @default(cuid())
+  phone         String?
+  updatedAt     DateTime @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  emails    Email[]
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+enum EnumInvoiceStatus {
+  Option1
+}
+
+enum EnumRecurringInvoiceStatus {
+  Option1
+}
+
+enum EnumEmailStatus {
+  Option1
+}
+
+enum EnumCreditNoteStatus {
+  Option1
+}
+
+enum EnumAccountingIncomeOrExpense {
+  Option1
+}
+
+enum EnumDeliveryNoteStatus {
+  Option1
+}
